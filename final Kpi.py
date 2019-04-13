@@ -40,17 +40,11 @@ def is_mac_not_windows():
 if is_mac_not_windows():
 	AUTOMATION_PATH = "/Users/jsaye/projects/technomic/GitHub/"
 	LOGO_PATH = AUTOMATION_PATH + "/logos/"
-	DESTINATION_PATH = AUTOMATION_PATH + "/finished_reports/"
+	DESTINATION_PATH = AUTOMATION_PATH + "finished_reports/"
 else:
 	AUTOMATION_PATH = "C:\\Users\\jsaye\\Documents\\Work\\Python Scripts\\Automation" + "\\" 
 	LOGO_PATH = AUTOMATION_PATH + "logos" + "\\"
 	DESTINATION_PATH = AUTOMATION_PATH + "\\finished reports\\"  
-
-#copying a file function
-def create_pptx(src, dst):
-	copyfile(src, dst)
-	new_file_name = str(dst)
-	prs = Presentation(AUTOMATION_PATH + new_file_name)
 
 #Comp Set function
 def comp_set(VA_stats, col, count_points, Chain):
@@ -264,8 +258,7 @@ Chains = ["Applebee's","Bahama Breeze Island Grille","Beef 'O' Brady's","BJ's Re
 "Wendy's","Whataburger","White Castle", "Hungry Howie's"]
 
 for Chain in Chains:
-	# d_path = "/Users/jsaye/projects/technomic/kpi_stats/finished reports"
-	create_pptx('input_conditional_2.pptx', Chain + '.pptx')
+	copyfile('input_conditional_2.pptx', DESTINATION_PATH +  Chain + '.pptx')
 	Seg = kpis[slugify(Chain)]["Seg"]
 	if Seg == "qsr":
 		seg_dem_base = "72,630"
@@ -276,8 +269,8 @@ for Chain in Chains:
 	else:
 		seg_dem_base = "18,711"
 
-	prs = Presentation(Chain + '.pptx')
-	# prs = Presentation('input_conditional_2.pptx')
+	prs = Presentation('input_conditional_2.pptx')
+
 	competitors = list(kpis[slugify(Chain)]["competitor_scores"].keys())
 	competitor_series = competitors.append(slugify(Chain))
 	competitor_series = competitors.append(Seg + "avg")
@@ -285,6 +278,7 @@ for Chain in Chains:
 	competitor_values = list(kpis[slugify(Chain)]["competitor_scores"].values())
 	competitor_tuple = list(zip(competitors[:-1], competitor_values))
 	competitor_tuple.sort(key=lambda elem: elem[1])
+
 	va_slide_competitor_list = [i[0] for i in competitor_tuple]
 	va_slide_competitor_score_list = [i[1] for i in competitor_tuple]
 
@@ -335,70 +329,6 @@ for Chain in Chains:
 		print(len(list_))
 		va_text(list_[0], list_[1], list_[2], list_[3])
 
-	# va_text(20, 
-	# 		round_string(
-	# 					(kpis[slugify(Chain)]
-	# 					["competitor_scores"]
-	# 					[va_slide_competitor_list[5]]
-	# 					*	100)) 
-	# 					+ "%", 
-	# 					" of recent " 
-	# 					+ kpis[slugify(Chain)]
-	# 					["chain_name"] 
-	# 					+ " guests considered visiting ", 
-	# 					kpis[va_slide_competitor_list[5]]
-	# 					["chain_name"])
-	
-	# va_text(21, 
-	# 		round_string((kpis[slugify(Chain)]
-	# 					["competitor_scores"]
-	# 					[va_slide_competitor_list[2]]
-	# 					*	100)) 
-	# 					+ "%",
-	#  					" considered visiting ",
-	#   					kpis[va_slide_competitor_list[2]]
-	#   					["chain_name"])
-	
-	# va_text(22, 
-	# 		round_string((kpis[slugify(Chain)]
-	# 					["competitor_scores"]
-	# 					[va_slide_competitor_list[1]]
-	# 					*	100)) 
-	# 					+ "%",
-	#  					" considered visiting ",
-	#   					kpis[va_slide_competitor_list[1]]
-	#   					["chain_name"])
-	
-	# va_text(23, 
-	# 		round_string((kpis[slugify(Chain)]
-	# 					["competitor_scores"]
-	# 					[va_slide_competitor_list[0]]
-	# 					*	100)) 
-	# 					+ "%",
-	#  					" considered visiting ",
-	#   					kpis[va_slide_competitor_list[0]]
-	#   					["chain_name"])
-	
-	# va_text(24, 
-	# 		round_string((kpis[slugify(Chain)]
-	# 					["competitor_scores"]
-	# 					[va_slide_competitor_list[3]]
-	# 					*	100)) 
-	# 					+ "%",
-	#  					" considered visiting ",
-	#  					kpis[va_slide_competitor_list[3]]
-	#  					["chain_name"])
-	
-	va_text(25, 
-			round_string((kpis[slugify(Chain)]
-						["competitor_scores"]
-						[va_slide_competitor_list[4]]
-						*	100)) 
-						+ "%",
-	 					" considered visiting ",
-	  					kpis[va_slide_competitor_list[4]]
-	  					["chain_name"])
-	
 	write_base_text(vo_slide, 
 					26,
 					"Total base: " 
@@ -409,8 +339,7 @@ for Chain in Chains:
 	
 	write_rest_visit_text(vo_slide, 
 							27, 
-							round_string(kpis[slugify(Chain)]["Rest_visit"]
-							*100) 
+							round_string(kpis[slugify(Chain)]["Rest_visit"] * 100) 
 							+ "%", 
 							" would have gone to another restaurant as an alternative to " 
 							+ Chain)
@@ -441,7 +370,6 @@ for Chain in Chains:
 
 	if kpis[slugify(Chain)]["attributes"]["Female"] > kpis[slugify(Chain)]["attributes"]["Male"]:
 		gender = gender[1]
-
 		gender_skew_for_Chain = kpis[slugify(Chain)]["attributes"]["Female"]
 		gender_avg = kpis[Seg + "avg"]["attributes"]["Female"]
 	else:
@@ -622,6 +550,7 @@ for Chain in Chains:
 							kpis[competitors[5]]["attributes"]["Food quality takeout"],
 							kpis[slugify(Chain)]["attributes"]["Food quality takeout"],
 							kpis[Seg + "avg"]["attributes"]["Food quality takeout"])
+
 
 	create_chart('food_quality', 
 				food_slide, 
